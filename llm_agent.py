@@ -49,33 +49,47 @@ print("LLM tool selection:")
 print(result["response"])
 
 import asyncio
-from mcp_client import get_approved_applications_by_vendor
-
+from mcp_client import (
+    get_approved_applications_by_vendor,
+    get_application_list,
+)
 # Parse the LLM's proposed tool call.
 selection = json.loads(result["response"])
 
-# Allow only the expected read-only MCP tool.
-if selection.get("tool") != "list_approved_applications_by_vendor":
-    raise ValueError("Unsupported MCP tool selection")
+# Allow only explicitly approved read-only MCP tools.
+allowed_tools = {
+    "list_approved_applications_by_vendor",
+    "list_applications",
+}
 
+if selection.get("tool") not in allowed_tools:
+    raise ValueError("Unsupported MCP tool selection")
 arguments = selection.get("arguments")
 
 if not isinstance(arguments, dict):
     raise ValueError("Invalid tool arguments")
 
-if set(arguments) != {"vendor"}:
-    raise ValueError("Unexpected tool arguments")
+if selection["tool"] == "list_applications":
+    if arguments != {}:
+        raise ValueError("Unexpected arguments for list_applications")
+else:
+    if set(arguments) != {"vendor"}:
+        raise ValueError("Unexpected vendor lookup arguments")
 
-vendor = arguments["vendor"]
+# Execute only the selected, validated MCP tool.
+if selection["tool"] == "list_applications":
+    tool_result = asyncio.run(
+        get_application_list()
+    )
+else:
+    vendor = arguments["vendor"]
 
-if not isinstance(vendor, str) or not vendor.strip():
-    raise ValueError("Invalid vendor")
+    if not isinstance(vendor, str) or not vendor.strip():
+        raise ValueError("Invalid vendor")
 
-# Execute the existing MCP client function.
-tool_result = asyncio.run(
-    get_approved_applications_by_vendor(vendor)
-)
-
+    tool_result = asyncio.run(
+        get_approved_applications_by_vendor(vendor)
+    )
 print("\nActual MCP tool result:")
 print(tool_result)
 
