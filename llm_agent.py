@@ -49,7 +49,7 @@ print("LLM tool selection:")
 print(result["response"])
 
 import asyncio
-from tool_security import validate_tool_name
+from tool_security import validate_tool_name, validate_tool_arguments
 from mcp_client import (
     get_approved_applications_by_vendor,
     get_application_list,
@@ -60,15 +60,7 @@ selection = json.loads(result["response"])
 # Validate the LLM-selected tool before execution.
 tool_name = validate_tool_name(selection.get("tool"))
 arguments = selection.get("arguments")
-if not isinstance(arguments, dict):
-    raise ValueError("Invalid tool arguments")
-
-if selection["tool"] == "list_applications":
-    if arguments != {}:
-        raise ValueError("Unexpected arguments for list_applications")
-else:
-    if set(arguments) != {"vendor"}:
-        raise ValueError("Unexpected vendor lookup arguments")
+arguments = validate_tool_arguments(tool_name, arguments)
 
 # Execute only the selected, validated MCP tool.
 if selection["tool"] == "list_applications":
