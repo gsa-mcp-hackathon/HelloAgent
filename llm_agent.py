@@ -5,7 +5,7 @@ import urllib.request
 OLLAMA_URL = "http://localhost:11434/api/generate"
 MODEL = "llama3.2:3b"
 
-question = "Which applications from Microsoft are approved for use?"
+question = input("Enter your application question: ").strip()
 
 prompt = f"""
 You are a tool-selection assistant for HelloAgent.
