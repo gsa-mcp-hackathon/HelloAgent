@@ -49,6 +49,7 @@ print("LLM tool selection:")
 print(result["response"])
 
 import asyncio
+from tool_security import validate_tool_name
 from mcp_client import (
     get_approved_applications_by_vendor,
     get_application_list,
@@ -56,16 +57,9 @@ from mcp_client import (
 # Parse the LLM's proposed tool call.
 selection = json.loads(result["response"])
 
-# Allow only explicitly approved read-only MCP tools.
-allowed_tools = {
-    "list_approved_applications_by_vendor",
-    "list_applications",
-}
-
-if selection.get("tool") not in allowed_tools:
-    raise ValueError("Unsupported MCP tool selection")
+# Validate the LLM-selected tool before execution.
+tool_name = validate_tool_name(selection.get("tool"))
 arguments = selection.get("arguments")
-
 if not isinstance(arguments, dict):
     raise ValueError("Invalid tool arguments")
 
