@@ -4,7 +4,7 @@ from inventory_repository import SQLiteInventory, DEFAULT_DB
 
 mcp = FastMCP(
     'Hello Agent MCP Server',
-    host=os.environ.get('HELLOAGENT_HOST', '127.0.0.1'),
+    host=os.environ.get('HELLOAGENT_HOST', '0.0.0.0'),
     port=int(os.environ.get('DATABRICKS_APP_PORT',
                             os.environ.get('HELLOAGENT_PORT', '8000'))),
     streamable_http_path='/mcp',
@@ -67,4 +67,4 @@ def list_approved_applications_by_vendor(vendor: str) -> dict:
 
 if __name__ == '__main__':
     mcp.run(transport=os.environ.get(
-        'HELLOAGENT_TRANSPORT', 'stdio'))
+        'HELLOAGENT_TRANSPORT', 'streamable-http'))
