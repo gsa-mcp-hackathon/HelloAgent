@@ -31,3 +31,10 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Local databases and backup files
+*.db
+*.db-*
+*.sqlite
+*.sqlite3
+*.backup
