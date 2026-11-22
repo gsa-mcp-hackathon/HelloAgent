@@ -2,7 +2,15 @@ import os
 from mcp.server.fastmcp import FastMCP
 from inventory_repository import SQLiteInventory, DEFAULT_DB
 
-mcp = FastMCP('Hello Agent MCP Server')
+mcp = FastMCP(
+    'Hello Agent MCP Server',
+    host=os.environ.get('HELLOAGENT_HOST', '127.0.0.1'),
+    port=int(os.environ.get('DATABRICKS_APP_PORT',
+                            os.environ.get('HELLOAGENT_PORT', '8000'))),
+    streamable_http_path='/mcp',
+    stateless_http=True,
+    json_response=True,
+)
 applications = {
     'HR Portal': {'owner': 'Human Resources', 'status': 'Active', 'technology': 'Python', 'vendor': 'Microsoft', 'approval_status': 'Approved'},
     'Legacy Reports': {'owner': 'IT Operations', 'status': 'Retirement candidate', 'technology': 'Java', 'vendor': 'Microsoft', 'approval_status': 'Not Approved'},
@@ -58,4 +66,5 @@ def list_approved_applications_by_vendor(vendor: str) -> dict:
 
 
 if __name__ == '__main__':
-    mcp.run()
+    mcp.run(transport=os.environ.get(
+        'HELLOAGENT_TRANSPORT', 'stdio'))

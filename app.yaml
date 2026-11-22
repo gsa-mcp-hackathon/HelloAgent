@@ -1,0 +1,11 @@
+command:
+  - python
+  - mcp_server.py
+
+env:
+  - name: HELLOAGENT_TRANSPORT
+    value: streamable-http
+  - name: HELLOAGENT_HOST
+    value: "0.0.0.0"
+  - name: HELLOAGENT_BACKEND
+    value: memory
