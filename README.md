@@ -78,3 +78,27 @@ These tests do not establish production reliability.
 Core MCP functionality and the Streamlit demonstration have
 been verified locally. Evaluation documentation and presentation
 materials are being prepared for the GSA MCP Hackathon.
+
+## Databricks deployment — reviewer guide
+
+This branch extends the original HelloAgent local prototype with a Databricks-hosted MCP server. The local Streamlit interface and authenticated Databricks notebook are separate demonstration paths.
+
+- [Deployment branch](https://github.com/gsa-mcp-hackathon/HelloAgent/tree/feature/databricks-deployment)
+- [Hosted MCP endpoint](https://helloagent-mcp-7474654188777746.aws.databricksapps.com/mcp)
+- [Original local prototype](https://github.com/udayaallu-blip/HelloAgent)
+
+### Cloud validation (November 23, 2026)
+
+The `helloagent-mcp` Databricks App was reported running. An authenticated notebook (`HelloAgent-MCP-Testing`) exercised all four MCP tools:
+
+| Tool | Observed result |
+|---|---|
+| `say_hello` | Hello, HelloAgent! |
+| `list_applications` | HR Portal and Legacy Reports |
+| `list_approved_applications_by_vendor` | Microsoft: HR Portal only |
+| `get_application` | Legacy Reports: Not Approved |
+
+The inventory is fictional. The endpoint requires authorized Databricks access and a compatible MCP client. A plain browser GET may return an event-stream negotiation error; use an authenticated MCP client instead. Reviewer permissions and continued hosting availability should be confirmed. Never commit credentials.
+
+IBM Code Engine and watsonx Orchestrate were explored but are not claimed as successful deployments. Production authorization, audit and governance controls remain future work.
+
